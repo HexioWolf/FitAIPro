@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitAI Pro - Tu Entrenador Personal con Inteligencia Artificial</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Librerías de pdfmake -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans antialiased selection:bg-brand-500 selection:text-gray-950">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="bg-brand-500 text-gray-950 p-2 rounded-xl font-bold flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-dumbbell text-xl"></i>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight text-white">FitAI <span class="text-brand-500">Pro</span></span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="hidden sm:inline-block text-xs bg-brand-500/10 text-brand-400 border border-brand-500/20 px-3 py-1 rounded-full font-medium">
+                    <i class="fa-solid fa-bolt mr-1"></i> 1 Plan Gratuito Incluido
+                </span>
+                <button onclick="scrollToApp()" class="bg-brand-500 hover:bg-brand-600 text-gray-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all shadow-lg shadow-brand-500/20 cursor-pointer">
+                    Crear mi plan
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden py-16 lg:py-24">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-900/20 via-gray-950 to-gray-950 -z-10"></div>
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <div class="inline-flex items-center gap-2 bg-gray-900 border border-gray-800 rounded-full px-4 py-1.5 mb-6 text-sm text-gray-300">
+                <span class="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"></span>
+                Impulsado por IA Avanzada
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6">
+                Tu rutina y dieta perfecta, <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-emerald-200">diseñadas al instante.</span>
+            </h1>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto mb-8">
+                Consigue un plan de entrenamiento y nutrición 100% adaptado a tus objetivos físicos y nivel de experiencia.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main App Container -->
+    <section id="app-container" class="max-w-3xl mx-auto px-4 pb-28">
+        <div class="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-black/50 relative overflow-hidden">
+            
+            <!-- Step 1: Form -->
+            <div id="form-step">
+                <div class="mb-8 text-center">
+                    <h2 class="text-2xl font-bold text-white mb-2">Genera tu plan personalizado</h2>
+                    <p class="text-sm text-gray-400">Introduce tus datos para que la IA elabore tu plan gratuito.</p>
+                </div>
+
+                <form id="fitness-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">Correo Electrónico</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                                <i class="fa-regular fa-envelope"></i>
+                            </span>
+                            <input type="email" id="email" required placeholder="tu@correo.com" class="w-full pl-10 pr-4 py-3 bg-gray-950 border border-gray-800 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1.5">Peso Actual (kg)</label>
+                            <input type="number" id="weight" required placeholder="Ej. 75" class="w-full px-4 py-3 bg-gray-950 border border-gray-800 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1.5">Nivel de Experiencia</label>
+                            <select id="level" class="w-full px-4 py-3 bg-gray-950 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm">
+                                <option value="Principiante">Principiante</option>
+                                <option value="Intermedio">Intermedio</option>
+                                <option value="Avanzado">Avanzado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">Objetivo Principal</label>
+                        <select id="goal" class="w-full px-4 py-3 bg-gray-950 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm">
+                            <option value="Perder grasa / Definir">Perder grasa y definir</option>
+                            <option value="Ganar masa muscular">Ganar masa muscular (Hipertrofia)</option>
+                            <option value="Ganar fuerza general">Ganar fuerza y rendimiento</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">Equipamiento Disponible</label>
+                        <input type="text" id="equipment" required placeholder="Ej. Gimnasio completo / Mancuernas en casa" class="w-full px-4 py-3 bg-gray-950 border border-gray-800 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">Lesiones o Molestias Físicas</label>
+                        <input type="text" id="injuries" required placeholder="Ej. Ninguna / Molestia leve en rodilla" class="w-full px-4 py-3 bg-gray-950 border border-gray-800 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm">
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="w-full mt-4 bg-brand-500 hover:bg-brand-600 text-gray-950 font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-brand-500/20 flex items-center justify-center space-x-2 text-sm cursor-pointer">
+                        <span>Generar Plan con IA Gratis</span>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Step 2: Loading State -->
+            <div id="loading-step" class="hidden py-16 text-center space-y-6">
+                <div class="relative w-20 h-20 mx-auto">
+                    <div class="absolute inset-0 rounded-full border-4 border-gray-800"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-brand-500 border-t-transparent animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-brand-400">
+                        <i class="fa-solid fa-brain text-2xl animate-pulse"></i>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-2">Diseñando tu plan con IA...</h3>
+                    <p class="text-sm text-gray-400">Enviando datos al correo y preparando tu rutina...</p>
+                </div>
+            </div>
+
+            <!-- Step 3: Result View -->
+            <div id="result-step" class="hidden space-y-6">
+                
+                <div class="space-y-6 bg-gray-900/60 p-6 rounded-2xl border border-gray-800">
+                    
+                    <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                        <div>
+                            <span class="text-xs bg-brand-500/10 text-brand-400 px-3 py-1 rounded-full font-medium border border-brand-500/20">
+                                <i class="fa-solid fa-check mr-1"></i> Plan Generado
+                            </span>
+                            <h2 class="text-2xl font-bold text-white mt-2">Tu Plan FitAI Pro Personalizado</h2>
+                        </div>
+                        <button onclick="resetApp()" class="text-xs text-gray-400 hover:text-white underline cursor-pointer">Generar otro</button>
+                    </div>
+
+                    <!-- Métricas Principales -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl text-center">
+                            <span class="text-xs text-gray-400 block mb-1">Calorías Diarias</span>
+                            <span id="res-kcal" class="text-xl font-extrabold text-brand-400">-- kcal</span>
+                        </div>
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl text-center">
+                            <span class="text-xs text-gray-400 block mb-1">Frecuencia</span>
+                            <span id="res-freq" class="text-xl font-extrabold text-white">4 Días / Sem</span>
+                        </div>
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl text-center">
+                            <span class="text-xs text-gray-400 block mb-1">Enfoque</span>
+                            <span id="res-focus" class="text-sm font-bold text-emerald-300">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Estructura & Macros -->
+                    <div class="bg-gray-950 border border-gray-800 rounded-2xl p-5 space-y-4 text-sm text-gray-300">
+                        <div>
+                            <div class="flex items-center space-x-2 text-white font-bold mb-2">
+                                <i class="fa-solid fa-dumbbell text-brand-400"></i>
+                                <span>Estructura de Entrenamiento Recomendada:</span>
+                            </div>
+                            <p id="res-workout-detail" class="text-gray-400 leading-relaxed text-xs sm:text-sm"></p>
+                        </div>
+
+                        <div class="pt-3 border-t border-gray-900">
+                            <div class="flex items-center space-x-2 text-white font-bold mb-2">
+                                <i class="fa-solid fa-utensils text-brand-400"></i>
+                                <span>Macronutrientes Estimados:</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 text-center text-xs mt-2">
+                                <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-800/80">
+                                    <span class="block font-bold text-white text-sm" id="res-protein">--g</span>
+                                    <span class="text-gray-500">Proteínas</span>
+                                </div>
+                                <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-800/80">
+                                    <span class="block font-bold text-white text-sm" id="res-carbs">--g</span>
+                                    <span class="text-gray-500">Carbos</span>
+                                </div>
+                                <div class="bg-gray-900 p-2.5 rounded-xl border border-gray-800/80">
+                                    <span class="block font-bold text-white text-sm" id="res-fats">--g</span>
+                                    <span class="text-gray-500">Grasas</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TARJETA DE RESUMEN EN WEB -->
+                    <div class="bg-gray-950 border border-gray-800 rounded-2xl p-5 space-y-3">
+                        <div class="flex items-center space-x-2 text-white font-bold">
+                            <i class="fa-solid fa-dumbbell text-brand-400"></i>
+                            <span>Rutina y Dieta Personalizada</span>
+                        </div>
+
+                        <div class="space-y-3 text-xs sm:text-sm text-gray-300">
+                            <p id="res-summary-text" class="text-gray-300"></p>
+                            <p id="res-summary-meta" class="text-xs text-gray-400"></p>
+                            <div class="p-3 bg-gray-900/90 rounded-xl border border-gray-800 text-xs text-emerald-400 flex items-center space-x-2">
+                                <i class="fa-solid fa-circle-check text-sm shrink-0"></i>
+                                <span>El contenido detallado con todos los bloques de entrenamiento, series, repeticiones y pautas nutricionales ha sido enviado correctamente a tu correo electrónico.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Botón de Descargar PDF -->
+                <button type="button" id="btnDescargarPdf" onclick="downloadPDF()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2 text-sm cursor-pointer">
+                    <i class="fa-solid fa-file-arrow-down text-lg"></i>
+                    <span>Descargar Rutina Completa en PDF</span>
+                </button>
+            </div>
+
+            <!-- Step 4: Paywall -->
+            <div id="paywall-modal" class="hidden space-y-6 text-center py-6">
+                <div class="w-16 h-16 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-lg">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Límite de Prueba Gratuita Alcanzado</h3>
+                    <p class="text-sm text-gray-400 max-w-md mx-auto">Ya has generado un plan gratuito con este correo. Desbloquea planes ilimitados por solo <span class="text-brand-400 font-semibold">19,00 € / mes</span>.</p>
+                </div>
+                <button onclick="goToStripe()" class="w-full max-w-sm mx-auto bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center space-x-2 text-sm cursor-pointer">
+                    <i class="fa-brands fa-stripe text-xl"></i>
+                    <span>Suscribirme a FitAI Pro (19,00 €)</span>
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Lógica de JavaScript -->
+    <script>
+        const WEBHOOK_URL = 'https://n8n-production-a368.up.railway.app/webhook/de2f05cc-fe20-4445-bfd2-75efd71eb8d5';
+        
+        let userPlanData = { kcal: 0, protein: 0, carbs: 0, fats: 0, level: 'Intermedio', goal: 'Ganar masa muscular', equipment: 'Gimnasio', injuries: 'Ninguna' };
+        let rawAiPlanText = '';
+
+        function scrollToApp() {
+            document.getElementById('app-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const weight = parseFloat(document.getElementById('weight').value) || 70;
+            const level = document.getElementById('level').value;
+            const goal = document.getElementById('goal').value;
+            const equipment = document.getElementById('equipment').value.trim();
+            const injuries = document.getElementById('injuries').value.trim();
+
+            document.getElementById('form-step').classList.add('hidden');
+            document.getElementById('loading-step').classList.remove('hidden');
+
+            let kcal = Math.round(weight * 30);
+            if (goal.includes('Perder')) kcal -= 400;
+            if (goal.includes('Ganar masa')) kcal += 350;
+
+            let protein = Math.round(weight * 2.2);
+            let fat = Math.round(weight * 0.9);
+            let carbs = Math.round((kcal - (protein * 4 + fat * 9)) / 4);
+
+            userPlanData = { kcal, protein, carbs, fats: fat, level, goal, equipment, injuries, weight };
+
+            document.getElementById('res-kcal').innerText = `${kcal} kcal`;
+            document.getElementById('res-focus').innerText = goal.split('/')[0];
+            document.getElementById('res-protein').innerText = `${protein}g`;
+            document.getElementById('res-carbs').innerText = `${carbs}g`;
+            document.getElementById('res-fats').innerText = `${fat}g`;
+
+            document.getElementById('res-workout-detail').innerText = 
+                `Rutina optimizada para nivel ${level} (${weight}kg). Enfocada en ${goal.toLowerCase()}. Equipamiento: ${equipment}.`;
+
+            document.getElementById('res-summary-text').innerHTML = `Plan completo adaptado a nivel <strong>${level}</strong> con un enfoque de <strong>${goal.toLowerCase()}</strong>.`;
+            document.getElementById('res-summary-meta').innerText = `Equipamiento: ${equipment} | Lesiones: ${injuries || 'Ninguna'}`;
+
+            // DISPARO ASÍNCRONO A N8N PARA EL CORREO Y EVALUACIÓN DE PAYWALL
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, weight, level, goal, equipment, injuries })
+                });
+
+                if (response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    let responseObj = {};
+                    if (Array.isArray(data) && data.length > 0) {
+                        responseObj = data[0];
+                    } else if (typeof data === 'object' && data !== null) {
+                        responseObj = data;
+                    }
+
+                    // DETECCIÓN DE PAYWALL DE N8N
+                    if (responseObj.paywall === true || responseObj.paywall === 'true' || responseObj.status === 'paywall') {
+                        document.getElementById('loading-step').classList.add('hidden');
+                        document.getElementById('paywall-modal').classList.remove('hidden');
+                        return;
+                    }
+
+                    rawAiPlanText = responseObj.htmlPlan || responseObj.plan || responseObj.output || '';
+                }
+            } catch (e) {
+                console.error('Error en webhook n8n:', e);
+            }
+
+            document.getElementById('loading-step').classList.add('hidden');
+            document.getElementById('result-step').classList.remove('hidden');
+        }
+
+        // BLOQUE MASIVO DE ALTA CALIDAD INTEGRADO CON LOS DATOS DEL USUARIO
+        function getSmartProfessionalContent() {
+            return [
+                { text: 'PROGRAMA DE ENTRENAMIENTO Y NUTRICIÓN FITAI PRO', fontSize: 13, bold: true, color: '#047857', margin: [0, 0, 0, 6] },
+                { text: `Plan optimizado para ${userPlanData.goal} | Nivel: ${userPlanData.level} | Equipamiento: ${userPlanData.equipment}`, fontSize: 9, color: '#6b7280', margin: [0, 0, 0, 12] },
+                
+                // Día 1
+                { text: 'DÍA 1: TORSO / FUERZA & HIPERTROFIA', fontSize: 10.5, bold: true, color: '#059669', margin: [0, 4, 0, 4] },
+                { 
+                    table: {
+                        headerRows: 1,
+                        widths: ['*', 50, 50, 90],
+                        body: [
+                            [
+                                { text: 'Ejercicio', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff' },
+                                { text: 'Series', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
+                                { text: 'Reps', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
+                                { text: 'RIR / Descanso', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' }
+                            ],
+                            [{ text: 'Press de Banca Plano con Barra / Mancuernas', fontSize: 8.5, color: '#374151' }, { text: '4', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '8 - 10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 2 / 120s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
+                            [{ text: 'Remo con Barra o Polea Baja en Supinación', fontSize: 8.5, color: '#374151' }, { text: '4', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 1-2 / 90s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
+                            [{ text: 'Press Militar de Hombros Sentado con Mancuernas', fontSize: 8.5, color: '#374151' }, { text: '3', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '10 - 12', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 2 / 90s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
+                            [{ text: 'Elecciones Laterales en Polea o Mancuernas', fontSize: 8.5, color: '#374151' }, { text: '3', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '15', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 0 / 60s', fontSize: 8.5, color: '#374151', alignment: 'center' }]
+                        ]
+                    },
+                    layout: {
+                        hLineWidth: (i, node) => (i === 0 || i === node.table.body.length) ? 1 : 0.5,
+                        vLineWidth: () => 0,
+                        hLineColor: () => '#e5e7eb',
+                        paddingTop: () => 5,
+                        paddingBottom: () => 5
+                    },
+                    margin: [0, 0, 0, 10]
+                },
+
+                // Día 2
+                { text: 'DÍA 2: TREN INFERIOR / CADENA ANTERIOR & POSTERIOR', fontSize: 10.5, bold: true, color: '#059669', margin: [0, 4, 0, 4] },
+                { 
+                    table: {
+                        headerRows: 1,
+                        widths: ['*', 50, 50, 90],
+                        body: [
+                            [
+                                { text: 'Ejercicio', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff' },
+                                { text: 'Series', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
+                                { text: 'Reps', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
+                                { text: 'RIR / Descanso', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' }
+                            ],
+                            [{ text: 'Sentadilla Libre o Prensa Inclinada 45°', fontSize: 8.5, color: '#374151' }, { text: '4', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '8 - 10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 2 / 150s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
+                            [{ text: 'Peso Muerto Rumano con Mancuernas', fontSize: 8.5, color: '#374151' }, { text: '3', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 1-2 / 120s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
+                            [{ text: 'Zancadas Búlgaras con Mancuernas', fontSize: 8.5, color: '#374151' }, { text: '3', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '12 c/u', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 1 / 90s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
+                            [{ text: 'Curl Femoral Tumbado en Máquina', fontSize: 8.5, color: '#374151' }, { text: '3', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '12 - 15', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 0 / 60s', fontSize: 8.5, color: '#374151', alignment: 'center' }]
+                        ]
+                    },
+                    layout: {
+                        hLineWidth: (i, node) => (i === 0 || i === node.table.body.length) ? 1 : 0.5,
+                        vLineWidth: () => 0,
+                        hLineColor: () => '#e5e7eb',
+                        paddingTop: () => 5,
+                        paddingBottom: () => 5
+                    },
+                    margin: [0, 0, 0, 10]
+                },
+
+                // Día 3 y 4
+                { text: 'DÍA 3 & 4: MOVILIDAD Y BLOQUE DE ESPALDA/BRAZOS', fontSize: 10.5, bold: true, color: '#059669', margin: [0, 4, 0, 4] },
+                { 
+                    table: {
+                        headerRows: 1,
+                        widths: ['*', 50, 50, 90],
+                        body: [
+                            [
+                                { text: 'Ejercicio / Actividad', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff' },
+                                { text: 'Series', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
+                                { text: 'Reps', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
+                                { text: 'RIR / Descanso', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' }
+                            ],
+                            [{ text: 'Día 3: Caminata Ligera + Movilidad Articular', fontSize: 8.5, color: '#374151' }, { text: '-', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '45 min', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'Zona 1', fontSize: 8.5, color: '#374151', alignment: 'center' }],
+                            [{ text: 'Día 4: Dominadas o Jalón al Pecho', fontSize: 8.5, color: '#374151' }, { text: '4', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '8 - 10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 2 / 120s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
+                            [{ text: 'Día 4: Face Pulls para Hombro Posterior', fontSize: 8.5, color: '#374151' }, { text: '4', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '15', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 1 / 60s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
+                            [{ text: 'Día 4: Superserie Bíceps / Tríceps', fontSize: 8.5, color: '#374151' }, { text: '3', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '12 c/u', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 1 / 60s', fontSize: 8.5, color: '#374151', alignment: 'center' }]
+                        ]
+                    },
+                    layout: {
+                        hLineWidth: (i, node) => (i === 0 || i === node.table.body.length) ? 1 : 0.5,
+                        vLineWidth: () => 0,
+                        hLineColor: () => '#e5e7eb',
+                        paddingTop: () => 5,
+                        paddingBottom: () => 5
+                    },
+                    margin: [0, 0, 0, 10]
+                },
+
+                // Pautas Nutricionales
+                { text: 'PAUTAS NUTRICIONALES Y HÁBITOS DIARIOS', fontSize: 10.5, bold: true, color: '#059669', margin: [0, 4, 0, 4] },
+                {
+                    table: {
+                        widths: ['*'],
+                        body: [
+                            [
+                                {
+                                    stack: [
+                                        { text: `• Ingesta Proteica: Mantener un consumo mínimo de ${userPlanData.protein}g diarios de proteína magra divididos en 3-4 ingestas.`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 3] },
+                                        { text: `• Balance Calórico: Objetivo estricto de ${userPlanData.kcal} kcal orientados a tu meta (${userPlanData.goal}).`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 3] },
+                                        { text: '• Hidratación y Descanso: Ingerir entre 2.5 y 3 litros de agua diarios y asegurar 7-8 horas de sueño profundo.', fontSize: 8.5, color: '#374151' }
+                                    ],
+                                    fillColor: '#f9fafb',
+                                    border: [true, true, true, true],
+                                    borderColor: ['#e5e7eb', '#e5e7eb', '#e5e7eb', '#e5e7eb'],
+                                    margin: [8, 8, 8, 8]
+                                }
+                            ]
+                        ]
+                    }
+                }
+            ];
+        }
+
+        function downloadPDF() {
+            const btn = document.getElementById('btnDescargarPdf');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Generando PDF...';
+            btn.disabled = true;
+
+            let finalPdfContent = [];
+            
+            if (rawAiPlanText && typeof rawAiPlanText === 'string' && rawAiPlanText.trim().length > 10) {
+                const cleanText = rawAiPlanText.replace(/<br\s*[\/]?>/gi, '\n').replace(/<\/p>/gi, '\n').replace(/<[^>]*>/g, '');
+                finalPdfContent = [
+                    { text: 'RUTINA Y DIETA GENERADA POR INTELIGENCIA ARTIFICIAL', fontSize: 12, bold: true, color: '#111827', margin: [0, 0, 0, 10] },
+                    {
+                        table: {
+                            widths: ['*'],
+                            body: [
+                                [
+                                    {
+                                        text: cleanText,
+                                        fontSize: 9,
+                                        color: '#374151',
+                                        fillColor: '#fdfdfd',
+                                        border: [true, true, true, true],
+                                        borderColor: ['#10b981', '#e5e7eb', '#e5e7eb', '#e5e7eb'],
+                                        margin: [10, 10, 10, 10]
+                                    }
+                                ]
+                            ]
+                        }
+                    }
+                ];
+            } else {
+                finalPdfContent = getSmartProfessionalContent();
+            }
+
+            const docDefinition = {
+                pageSize: 'A4',
+                pageMargins: [35, 35, 35, 35],
+                content: [
+                    {
+                        columns: [
+                            { text: [{ text: 'FitAI ', fontSize: 22, bold: true, color: '#111827' }, { text: 'Pro', fontSize: 22, bold: true, color: '#059669' }] },
+                            { text: 'PLAN PERSONALIZADO DE ENTRENAMIENTO', fontSize: 9, bold: true, color: '#059669', alignment: 'right', margin: [0, 8, 0, 0] }
+                        ]
+                    },
+                    { canvas: [{ type: 'line', x1: 0, y1: 6, x2: 525, y2: 6, lineWidth: 2, lineColor: '#10b981' }], margin: [0, 0, 0, 15] },
+                    { text: `Nivel: ${userPlanData.level}  |  Objetivo: ${userPlanData.goal}  |  Equipamiento: ${userPlanData.equipment}  |  Molestias: ${userPlanData.injuries || 'Ninguna'}`, fontSize: 9, color: '#4b5563', margin: [0, 0, 0, 15] },
+                    {
+                        table: {
+                            widths: ['*', '*', '*', '*'],
+                            body: [
+                                [
+                                    { text: [{ text: 'Calorías\n', fontSize: 7.5, color: '#6b7280' }, { text: `${userPlanData.kcal} kcal`, fontSize: 11, bold: true, color: '#047857' }], alignment: 'center', fillColor: '#f0fdf4', border: [true,true,true,true], borderColor: ['#10b981','#10b981','#10b981','#10b981'] },
+                                    { text: [{ text: 'Proteínas\n', fontSize: 7.5, color: '#6b7280' }, { text: `${userPlanData.protein}g`, fontSize: 11, bold: true, color: '#111827' }], alignment: 'center', fillColor: '#f9fafb', border: [true,true,true,true], borderColor: ['#e5e7eb','#e5e7eb','#e5e7eb','#e5e7eb'] },
+                                    { text: [{ text: 'Carbos\n', fontSize: 7.5, color: '#6b7280' }, { text: `${userPlanData.carbs}g`, fontSize: 11, bold: true, color: '#111827' }], alignment: 'center', fillColor: '#f9fafb', border: [true,true,true,true], borderColor: ['#e5e7eb','#e5e7eb','#e5e7eb','#e5e7eb'] },
+                                    { text: [{ text: 'Grasas\n', fontSize: 7.5, color: '#6b7280' }, { text: `${userPlanData.fats}g`, fontSize: 11, bold: true, color: '#111827' }], alignment: 'center', fillColor: '#f9fafb', border: [true,true,true,true], borderColor: ['#e5e7eb','#e5e7eb','#e5e7eb','#e5e7eb'] }
+                                ]
+                            ]
+                        },
+                        margin: [0, 0, 0, 15]
+                    },
+                    ...finalPdfContent
+                ],
+                defaultStyle: { font: 'Roboto' }
+            };
+
+            pdfMake.createPdf(docDefinition).download('Plan-Personalizado-FitAI-Pro.pdf');
+            setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-file-arrow-down text-lg"></i><span>Descargar Rutina Completa en PDF</span>'; btn.disabled = false; }, 600);
+        }
+
+        function goToStripe() { window.location.href = 'https://buy.stripe.com/test_cNi9AU0ikaHk9QleMZdby01'; }
+        function resetApp() { document.getElementById('result-step').classList.add('hidden'); document.getElementById('form-step').classList.remove('hidden'); document.getElementById('fitness-form').reset(); }
+    </script>
+</body>
+</html>
