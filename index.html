@@ -279,14 +279,16 @@
         <button type="button" onclick="openLegalModal('cookies')" class="hover:text-gray-400 transition cursor-pointer">Política de Cookies</button>
     </footer>
 
-    <!-- BANNER DE COOKIES -->
+    <!-- BANNER DE COOKIES (CON LAS 3 OPCIONES) -->
     <div id="cookie-banner" class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800 p-4 z-50 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl">
         <p class="text-sm text-gray-300 text-center sm:text-left">
             Utilizamos cookies técnicas necesarias para el correcto funcionamiento de la plataforma y sesión de usuario.
             <button type="button" onclick="openLegalModal('cookies')" class="text-brand-400 underline hover:text-brand-300 ml-1">Política de Cookies</button>
         </p>
-        <div class="flex gap-3">
-            <button type="button" onclick="acceptCookies()" class="bg-brand-500 hover:bg-brand-600 text-gray-950 font-semibold text-sm px-4 py-2 rounded-lg transition cursor-pointer">Aceptar</button>
+        <div class="flex flex-wrap gap-2 justify-center">
+            <button type="button" onclick="acceptCookies('all')" class="bg-brand-500 hover:bg-brand-600 text-gray-950 font-semibold text-xs px-3 py-2 rounded-lg transition cursor-pointer">Aceptar todas</button>
+            <button type="button" onclick="acceptCookies('config')" class="bg-gray-800 hover:bg-gray-700 text-gray-200 font-semibold text-xs px-3 py-2 rounded-lg transition cursor-pointer">Configurar</button>
+            <button type="button" onclick="acceptCookies('reject')" class="bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white font-semibold text-xs px-3 py-2 rounded-lg transition cursor-pointer">Rechazar</button>
         </div>
     </div>
 
@@ -320,12 +322,12 @@
             }
         }
 
-        // Gestión de Cookies
-        function acceptCookies() {
+        // Gestión de Cookies (3 opciones)
+        function acceptCookies(type) {
             document.getElementById('cookie-banner').style.display = 'none';
-            localStorage.setItem('cookiesAccepted', 'true');
+            localStorage.setItem('cookiesAccepted', type);
         }
-        if (localStorage.getItem('cookiesAccepted') === 'true') {
+        if (localStorage.getItem('cookiesAccepted')) {
             const banner = document.getElementById('cookie-banner');
             if (banner) banner.style.display = 'none';
         }
