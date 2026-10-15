@@ -79,7 +79,7 @@
             <!-- PESTAÑAS DE NAVEGACIÓN (TABS) -->
             <div class="flex justify-center mb-6 space-x-2">
                 <button type="button" id="tab-btn-generator" onclick="switchTab('generator')" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-brand-500 text-gray-950 shadow-lg shadow-brand-500/20 cursor-pointer">
-                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Generar / Editar Plan
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Generador de Planes
                 </button>
                 <button type="button" id="tab-btn-history" onclick="switchTab('history')" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-gray-900 text-gray-400 hover:text-white border border-gray-800 cursor-pointer">
                     <i class="fa-solid fa-folder-open mr-2"></i> Mis Planes Guardados
@@ -93,8 +93,8 @@
                     <!-- Step 1: Form -->
                     <div id="form-step">
                         <div class="mb-8 text-center">
-                            <h2 id="form-title-text" class="text-2xl font-bold text-white mb-2">Genera tu plan personalizado</h2>
-                            <p id="form-subtitle-text" class="text-sm text-gray-400">Introduce tus datos para que la IA elabore tu plan gratuito.</p>
+                            <h2 class="text-2xl font-bold text-white mb-2">Genera tu plan personalizado</h2>
+                            <p class="text-sm text-gray-400">Introduce tus datos para que la IA elabore tu plan gratuito.</p>
                         </div>
 
                         <form id="fitness-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
@@ -191,7 +191,7 @@
                             </div>
 
                             <button type="submit" id="submit-btn" class="w-full mt-4 bg-brand-500 hover:bg-brand-600 text-gray-950 font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-brand-500/20 flex items-center justify-center space-x-2 text-sm cursor-pointer">
-                                <span id="submit-btn-text">Generar Plan con IA Gratis</span>
+                                <span>Generar Plan con IA Gratis</span>
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                             </button>
                         </form>
@@ -207,12 +207,12 @@
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-white mb-2">Actualizando tu plan con IA...</h3>
-                            <p class="text-sm text-gray-400">Sincronizando datos y preparando tu rutina...</p>
+                            <h3 class="text-xl font-bold text-white mb-2">Diseñando tu plan con IA...</h3>
+                            <p class="text-sm text-gray-400">Enviando datos al correo y preparando tu rutina...</p>
                         </div>
                     </div>
 
-                    <!-- Step 3: Result View -->
+                    <!-- Step 3: Result View & Update Panel -->
                     <div id="result-step" class="hidden space-y-6">
                         
                         <div class="space-y-6 bg-gray-900/60 p-6 rounded-2xl border border-gray-800">
@@ -255,6 +255,40 @@
                                 <div class="relative w-full h-48">
                                     <canvas id="progressChart"></canvas>
                                 </div>
+                            </div>
+
+                            <!-- PANEL DE ACTUALIZACIÓN RÁPIDA INTEGRADO EN LOS DETALLES -->
+                            <div class="bg-gray-950 border border-brand-500/30 rounded-2xl p-5 space-y-4">
+                                <div class="flex items-center space-x-2 text-white font-bold text-sm">
+                                    <i class="fa-solid fa-sliders text-brand-400"></i>
+                                    <span>Actualizar Datos de este Plan (Peso, Altura, Actividad, Lesiones...)</span>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Nuevo Peso (kg)</label>
+                                        <input type="number" id="update-weight" class="w-full px-3 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Nueva Altura (cm)</label>
+                                        <input type="number" id="update-height" class="w-full px-3 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Nivel de Actividad</label>
+                                        <select id="update-activity" class="w-full px-3 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500">
+                                            <option value="Sedentario">Sedentario</option>
+                                            <option value="Ligera">Ligera</option>
+                                            <option value="Moderada">Moderada</option>
+                                            <option value="Alta">Alta</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Lesiones / Molestias</label>
+                                        <input type="text" id="update-injuries" class="w-full px-3 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500">
+                                    </div>
+                                </div>
+                                <button type="button" onclick="applyPlanUpdates()" class="w-full bg-brand-500 hover:bg-brand-600 text-gray-950 font-bold py-2.5 px-4 rounded-xl text-xs transition cursor-pointer flex items-center justify-center space-x-1.5 shadow-lg shadow-brand-500/20">
+                                    <i class="fa-solid fa-sync-alt"></i> <span>Guardar Cambios y Recalcular Calorías</span>
+                                </button>
                             </div>
 
                             <!-- Estructura & Macros -->
@@ -335,7 +369,7 @@
                 <div id="view-history" class="hidden space-y-6">
                     <div class="mb-6 text-center">
                         <h2 class="text-2xl font-bold text-white mb-2">Mis Planes Guardados</h2>
-                        <p class="text-sm text-gray-400">Introduce tu correo para ver tus rutinas y editarlas por completo.</p>
+                        <p class="text-sm text-gray-400">Introduce tu correo para ver tus rutinas, consultar sus gráficas y actualizarlas.</p>
                     </div>
 
                     <div class="flex gap-2 max-w-md mx-auto mb-6">
@@ -386,7 +420,7 @@
     <script>
         const WEBHOOK_URL = 'https://n8n-production-a368.up.railway.app/webhook/de2f05cc-fe20-4445-bfd2-75efd71eb8d5';
         
-        let userPlanData = { planName: 'Plan Personalizado', kcal: 0, protein: 0, carbs: 0, fats: 0, level: 'Intermedio', goal: 'Ganar masa muscular', equipment: 'Gimnasio', injuries: 'Ninguna', supplements: 'Ninguno', allergies: 'Ninguna' };
+        let userPlanData = { planName: 'Plan Personalizado', kcal: 0, protein: 0, carbs: 0, fats: 0, level: 'Intermedio', goal: 'Ganar masa muscular', equipment: 'Gimnasio', injuries: 'Ninguna', supplements: 'Ninguno', allergies: 'Ninguna', weight: 70, height: 175, activity: 'Moderada', sex: 'Hombre', email: '' };
         let rawAiPlanText = '';
         let progressChartInstance = null;
 
@@ -576,47 +610,106 @@
                         <h4 class="text-white font-bold text-lg mt-1.5"><i class="fa-solid fa-bookmark text-brand-400 mr-2"></i>${plan.planName}</h4>
                         <p class="text-xs text-gray-400 mt-1">Peso: ${plan.weight}kg | Altura: ${plan.height}cm | Calorías: ${plan.kcal} kcal</p>
                     </div>
-                    <button onclick='loadPlanIntoForm(${JSON.stringify(plan)})' class="bg-brand-500 hover:bg-brand-600 text-gray-950 font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shrink-0 flex items-center space-x-1.5">
-                        <i class="fa-solid fa-pen-to-square"></i> <span>Editar Plan</span>
+                    <button onclick='viewPlanDetails(${JSON.stringify(plan)})' class="bg-gray-900 hover:bg-brand-500 hover:text-gray-950 text-gray-300 font-semibold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer border border-gray-800 shrink-0 flex items-center space-x-1.5">
+                        <span>Ver y Actualizar</span> <i class="fa-solid fa-arrow-right ml-1"></i>
                     </button>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // Cargar todos los datos del plan seleccionado en el formulario para editar cualquier campo
-        function loadPlanIntoForm(plan) {
-            document.getElementById('email').value = plan.email || '';
-            document.getElementById('plan-name').value = plan.planName || '';
-            document.getElementById('weight').value = plan.weight || '';
-            document.getElementById('height').value = plan.height || '';
-            if (plan.sex) document.getElementById('sex').value = plan.sex;
-            if (plan.activity) document.getElementById('activity').value = plan.activity;
-            if (plan.level) document.getElementById('level').value = plan.level;
-            if (plan.goal) document.getElementById('goal').value = plan.goal;
-            if (plan.equipment) document.getElementById('equipment').value = plan.equipment;
-            if (plan.allergies) document.getElementById('allergies').value = plan.allergies;
-            if (plan.injuries) document.getElementById('injuries').value = plan.injuries;
+        // Ver detalles, gráfica y panel de actualización desde el historial
+        function viewPlanDetails(plan) {
+            userPlanData = plan;
+            document.getElementById('res-plan-title-badge').innerText = plan.planName;
+            document.getElementById('res-plan-heading').innerText = plan.planName;
+            document.getElementById('res-kcal').innerText = `${plan.kcal} kcal`;
+            document.getElementById('res-focus').innerText = plan.goal.split('/')[0];
+            document.getElementById('res-protein').innerText = `${plan.protein}g`;
+            document.getElementById('res-carbs').innerText = `${plan.carbs}g`;
+            document.getElementById('res-fats').innerText = `${plan.fats}g`;
 
-            if (plan.supplements) {
-                const supSelect = document.getElementById('suplementos');
-                const supCustom = document.getElementById('suplementos-custom');
-                if (supSelect.querySelector(`option[value="${plan.supplements}"]`)) {
-                    supSelect.value = plan.supplements;
-                    supCustom.classList.add('hidden');
-                    supCustom.value = '';
-                } else {
-                    supSelect.value = 'Escribir yo mismo';
-                    supCustom.classList.remove('hidden');
-                    supCustom.value = plan.supplements;
-                }
-            }
+            document.getElementById('update-weight').value = plan.weight || 70;
+            document.getElementById('update-height').value = plan.height || 175;
+            document.getElementById('update-activity').value = plan.activity || 'Moderada';
+            document.getElementById('update-injuries').value = plan.injuries || 'Ninguna';
 
-            document.getElementById('form-title-text').innerText = `Editando: ${plan.planName}`;
-            document.getElementById('form-subtitle-text').innerText = 'Modifica cualquier parámetro y guarda los cambios para actualizar tu rutina.';
-            document.getElementById('submit-btn-text').innerText = 'Actualizar Plan y Sincronizar';
+            document.getElementById('res-workout-detail').innerText = 
+                `Rutina optimizada para nivel ${plan.level} (${plan.weight}kg, ${plan.height}cm). Enfocada en ${plan.goal.toLowerCase()}. Equipamiento: ${plan.equipment}. Suplementación: ${plan.supplements}.`;
+
+            document.getElementById('res-summary-text').innerHTML = `Plan guardado adaptado a nivel <strong>${plan.level}</strong> con enfoque de <strong>${plan.goal.toLowerCase()}</strong>.`;
+            document.getElementById('res-summary-meta').innerText = `Equipamiento: ${plan.equipment} | Suplementos: ${plan.supplements} | Alergias: ${plan.allergies} | Lesiones: ${plan.injuries || 'Ninguna'}`;
 
             switchTab('generator');
+            document.getElementById('form-step').classList.add('hidden');
+            document.getElementById('result-step').classList.remove('hidden');
+
+            setTimeout(() => {
+                renderProgressChart(userPlanData.email, userPlanData.planName, userPlanData.weight, userPlanData.kcal);
+            }, 100);
+        }
+
+        // Aplicar actualizaciones desde el panel integrado en la vista de resultados
+        async function applyPlanUpdates() {
+            const newWeight = parseFloat(document.getElementById('update-weight').value) || userPlanData.weight;
+            const newHeight = parseFloat(document.getElementById('update-height').value) || userPlanData.height;
+            const newActivity = document.getElementById('update-activity').value;
+            const newInjuries = document.getElementById('update-injuries').value.trim() || 'Ninguna';
+
+            let kcal = Math.round(newWeight * 30);
+            if (userPlanData.goal.includes('Perder')) kcal -= 400;
+            if (userPlanData.goal.includes('Ganar masa')) kcal += 350;
+
+            let protein = Math.round(newWeight * 2.2);
+            let fat = Math.round(newWeight * 0.9);
+            let carbs = Math.round((kcal - (protein * 4 + fat * 9)) / 4);
+
+            userPlanData.weight = newWeight;
+            userPlanData.height = newHeight;
+            userPlanData.activity = newActivity;
+            userPlanData.injuries = newInjuries;
+            userPlanData.kcal = kcal;
+            userPlanData.protein = protein;
+            userPlanData.carbs = carbs;
+            userPlanData.fats = fat;
+
+            localStorage.setItem('fitai_plan_' + userPlanData.email + '_' + userPlanData.planName.trim().toLowerCase(), JSON.stringify(userPlanData));
+
+            document.getElementById('res-kcal').innerText = `${kcal} kcal`;
+            document.getElementById('res-protein').innerText = `${protein}g`;
+            document.getElementById('res-carbs').innerText = `${carbs}g`;
+            document.getElementById('res-fats').innerText = `${fat}g`;
+
+            document.getElementById('res-workout-detail').innerText = 
+                `Rutina optimizada para nivel ${userPlanData.level} (${newWeight}kg, ${newHeight}cm). Enfocada en ${userPlanData.goal.toLowerCase()}. Equipamiento: ${userPlanData.equipment}. Suplementación: ${userPlanData.supplements}.`;
+
+            renderProgressChart(userPlanData.email, userPlanData.planName, newWeight, kcal);
+
+            try {
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: userPlanData.email, 
+                        planName: userPlanData.planName, 
+                        weight: newWeight, 
+                        height: newHeight, 
+                        sex: userPlanData.sex, 
+                        activity: newActivity, 
+                        level: userPlanData.level, 
+                        objetivo_principal: userPlanData.goal, 
+                        equipment: userPlanData.equipment, 
+                        supplements: userPlanData.supplements, 
+                        allergies: userPlanData.allergies, 
+                        injuries: newInjuries, 
+                        kcal 
+                    })
+                });
+                alert('¡Plan actualizado y sincronizado correctamente con n8n!');
+            } catch (e) {
+                console.error('Error al sincronizar con webhook n8n:', e);
+                alert('Plan actualizado localmente, pero hubo un fallo al sincronizar con el servidor.');
+            }
         }
 
         async function handleFormSubmit(event) {
@@ -660,6 +753,11 @@
             document.getElementById('res-protein').innerText = `${protein}g`;
             document.getElementById('res-carbs').innerText = `${carbs}g`;
             document.getElementById('res-fats').innerText = `${fat}g`;
+
+            document.getElementById('update-weight').value = weight;
+            document.getElementById('update-height').value = height;
+            document.getElementById('update-activity').value = activity;
+            document.getElementById('update-injuries').value = injuries;
 
             document.getElementById('res-workout-detail').innerText = 
                 `Rutina optimizada para nivel ${level} (${weight}kg, ${height}cm). Enfocada en ${goal.toLowerCase()}. Equipamiento: ${equipment}. Suplementación: ${supplements}.`;
@@ -893,14 +991,7 @@
         }
 
         function goToStripe() { window.location.href = 'https://buy.stripe.com/test_cNi9AU0ikaHk9QleMZdby01'; }
-        function resetApp() { 
-            document.getElementById('form-title-text').innerText = 'Genera tu plan personalizado';
-            document.getElementById('form-subtitle-text').innerText = 'Introduce tus datos para que la IA elabore tu plan gratuito.';
-            document.getElementById('submit-btn-text').innerText = 'Generar Plan con IA Gratis';
-            document.getElementById('result-step').classList.add('hidden'); 
-            document.getElementById('form-step').classList.remove('hidden'); 
-            document.getElementById('fitness-form').reset(); 
-        }
+        function resetApp() { document.getElementById('result-step').classList.add('hidden'); document.getElementById('form-step').classList.remove('hidden'); document.getElementById('fitness-form').reset(); }
     </script>
 </body>
 </html>
