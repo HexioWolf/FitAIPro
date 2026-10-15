@@ -437,7 +437,7 @@
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, weight, height, sex, activity, level, objetivo_principal: goal, equipment, supplements, allergies, injuries })
+                    body: JSON.stringify({ email, weight, height, sex, activity, level, objetivo_principal: goal, equipment, supplements, allergies, injuries, kcal })
                 });
 
                 if (response.ok) {
@@ -466,24 +466,24 @@
             document.getElementById('result-step').classList.remove('hidden');
         }
 
-        // BLOQUE MASIVO DE ALTA CALIDAD INTEGRADO CON LOS DATOS DEL USUARIO
+        // BLOQUE MASIVO DE ALTA CALIDAD INTEGRADO CON LOS DATOS DEL USUARIO (PDF MEJORADO)
         function getSmartProfessionalContent() {
             return [
                 { text: 'PROGRAMA DE ENTRENAMIENTO Y NUTRICIÓN FITAI PRO', fontSize: 13, bold: true, color: '#047857', margin: [0, 0, 0, 6] },
                 { text: `Plan optimizado para ${userPlanData.goal} | Nivel: ${userPlanData.level} | Suplementación: ${userPlanData.supplements}`, fontSize: 9, color: '#6b7280', margin: [0, 0, 0, 12] },
                 
                 // Día 1
-                { text: 'DÍA 1: TORSO / FUERZA & HIPERTROFIA', fontSize: 10.5, bold: true, color: '#059669', margin: [0, 4, 0, 4] },
+                { text: 'DÍA 1: TORSO / FUERZA & HIPERTROFIA', fontSize: 11, bold: true, color: '#ffffff', fillColor: '#059669', margin: [0, 8, 0, 4] },
                 { 
                     table: {
                         headerRows: 1,
-                        widths: ['*', 50, 50, 90],
+                        widths: ['*', 45, 55, 95],
                         body: [
                             [
-                                { text: 'Ejercicio', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff' },
-                                { text: 'Series', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
-                                { text: 'Reps', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
-                                { text: 'RIR / Descanso', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' }
+                                { text: 'Ejercicio', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff' },
+                                { text: 'Series', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff', alignment: 'center' },
+                                { text: 'Reps', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff', alignment: 'center' },
+                                { text: 'RIR / Descanso', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff', alignment: 'center' }
                             ],
                             [{ text: 'Press de Banca Plano con Barra / Mancuernas', fontSize: 8.5, color: '#374151' }, { text: '4', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '8 - 10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 2 / 120s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
                             [{ text: 'Remo con Barra o Polea Baja en Supinación', fontSize: 8.5, color: '#374151' }, { text: '4', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 1-2 / 90s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
@@ -495,24 +495,24 @@
                         hLineWidth: (i, node) => (i === 0 || i === node.table.body.length) ? 1 : 0.5,
                         vLineWidth: () => 0,
                         hLineColor: () => '#e5e7eb',
-                        paddingTop: () => 5,
-                        paddingBottom: () => 5
+                        paddingTop: () => 6,
+                        paddingBottom: () => 6
                     },
-                    margin: [0, 0, 0, 10]
+                    margin: [0, 0, 0, 12]
                 },
 
                 // Día 2
-                { text: 'DÍA 2: TREN INFERIOR / CADENA ANTERIOR & POSTERIOR', fontSize: 10.5, bold: true, color: '#059669', margin: [0, 4, 0, 4] },
+                { text: 'DÍA 2: TREN INFERIOR / CADENA ANTERIOR & POSTERIOR', fontSize: 11, bold: true, color: '#ffffff', fillColor: '#059669', margin: [0, 8, 0, 4] },
                 { 
                     table: {
                         headerRows: 1,
-                        widths: ['*', 50, 50, 90],
+                        widths: ['*', 45, 55, 95],
                         body: [
                             [
-                                { text: 'Ejercicio', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff' },
-                                { text: 'Series', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
-                                { text: 'Reps', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
-                                { text: 'RIR / Descanso', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' }
+                                { text: 'Ejercicio', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff' },
+                                { text: 'Series', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff', alignment: 'center' },
+                                { text: 'Reps', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff', alignment: 'center' },
+                                { text: 'RIR / Descanso', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff', alignment: 'center' }
                             ],
                             [{ text: 'Sentadilla Libre o Prensa Inclinada 45°', fontSize: 8.5, color: '#374151' }, { text: '4', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '8 - 10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 2 / 150s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
                             [{ text: 'Peso Muerto Rumano con Mancuernas', fontSize: 8.5, color: '#374151' }, { text: '3', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 1-2 / 120s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
@@ -524,24 +524,24 @@
                         hLineWidth: (i, node) => (i === 0 || i === node.table.body.length) ? 1 : 0.5,
                         vLineWidth: () => 0,
                         hLineColor: () => '#e5e7eb',
-                        paddingTop: () => 5,
-                        paddingBottom: () => 5
+                        paddingTop: () => 6,
+                        paddingBottom: () => 6
                     },
-                    margin: [0, 0, 0, 10]
+                    margin: [0, 0, 0, 12]
                 },
 
                 // Día 3 y 4
-                { text: 'DÍA 3 & 4: MOVILIDAD Y BLOQUE DE ESPALDA/BRAZOS', fontSize: 10.5, bold: true, color: '#059669', margin: [0, 4, 0, 4] },
+                { text: 'DÍA 3 & 4: MOVILIDAD Y BLOQUE DE ESPALDA/BRAZOS', fontSize: 11, bold: true, color: '#ffffff', fillColor: '#059669', margin: [0, 8, 0, 4] },
                 { 
                     table: {
                         headerRows: 1,
-                        widths: ['*', 50, 50, 90],
+                        widths: ['*', 45, 55, 95],
                         body: [
                             [
-                                { text: 'Ejercicio / Actividad', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff' },
-                                { text: 'Series', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
-                                { text: 'Reps', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' },
-                                { text: 'RIR / Descanso', bold: true, fontSize: 8.5, fillColor: '#059669', color: '#ffffff', alignment: 'center' }
+                                { text: 'Ejercicio / Actividad', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff' },
+                                { text: 'Series', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff', alignment: 'center' },
+                                { text: 'Reps', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff', alignment: 'center' },
+                                { text: 'RIR / Descanso', bold: true, fontSize: 8.5, fillColor: '#10b981', color: '#ffffff', alignment: 'center' }
                             ],
                             [{ text: 'Día 3: Caminata Ligera + Movilidad Articular', fontSize: 8.5, color: '#374151' }, { text: '-', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '45 min', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'Zona 1', fontSize: 8.5, color: '#374151', alignment: 'center' }],
                             [{ text: 'Día 4: Dominadas o Jalón al Pecho', fontSize: 8.5, color: '#374151' }, { text: '4', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: '8 - 10', fontSize: 8.5, color: '#374151', alignment: 'center' }, { text: 'RIR 2 / 120s', fontSize: 8.5, color: '#374151', alignment: 'center' }],
@@ -553,14 +553,14 @@
                         hLineWidth: (i, node) => (i === 0 || i === node.table.body.length) ? 1 : 0.5,
                         vLineWidth: () => 0,
                         hLineColor: () => '#e5e7eb',
-                        paddingTop: () => 5,
-                        paddingBottom: () => 5
+                        paddingTop: () => 6,
+                        paddingBottom: () => 6
                     },
-                    margin: [0, 0, 0, 10]
+                    margin: [0, 0, 0, 12]
                 },
 
                 // Pautas Nutricionales
-                { text: 'PAUTAS NUTRICIONALES Y SUPLEMENTACIÓN', fontSize: 10.5, bold: true, color: '#059669', margin: [0, 4, 0, 4] },
+                { text: 'PAUTAS NUTRICIONALES Y MACROS', fontSize: 11, bold: true, color: '#ffffff', fillColor: '#059669', margin: [0, 8, 0, 4] },
                 {
                     table: {
                         widths: ['*'],
@@ -568,16 +568,16 @@
                             [
                                 {
                                     stack: [
-                                        { text: `• Ingesta Proteica: Mantener un consumo mínimo de ${userPlanData.protein}g diarios de proteína magra divididos en 3-4 ingestas.`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 3] },
-                                        { text: `• Balance Calórico: Objetivo estricto de ${userPlanData.kcal} kcal orientados a tu meta (${userPlanData.goal}).`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 3] },
-                                        { text: `• Suplementación seleccionada: ${userPlanData.supplements}. Asegurar correcta pauta de uso según objetivos.`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 3] },
-                                        { text: `• Alergias y Exclusiones: ${userPlanData.allergies}.`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 3] },
-                                        { text: '• Hidratación y Descanso: Ingerir entre 2.5 y 3 litros de agua diarios y asegurar 7-8 horas de sueño profundo.', fontSize: 8.5, color: '#374151' }
+                                        { text: `• Ingesta Proteica: Consumo objetivo de ${userPlanData.protein}g diarios divididos en 3-4 ingestas.`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 4] },
+                                        { text: `• Balance Calórico: Objetivo estricto de ${userPlanData.kcal} kcal orientados a tu meta (${userPlanData.goal}).`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 4] },
+                                        { text: `• Suplementación: ${userPlanData.supplements}.`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 4] },
+                                        { text: `• Exclusiones / Alergias: ${userPlanData.allergies}.`, fontSize: 8.5, color: '#374151', margin: [0, 0, 0, 4] },
+                                        { text: '• Hidratación: 2.5 a 3 litros de agua diarios y descanso óptimo de 7-8 horas.', fontSize: 8.5, color: '#374151' }
                                     ],
                                     fillColor: '#f9fafb',
                                     border: [true, true, true, true],
-                                    borderColor: ['#e5e7eb', '#e5e7eb', '#e5e7eb', '#e5e7eb'],
-                                    margin: [8, 8, 8, 8]
+                                    borderColor: ['#10b981', '#10b981', '#10b981', '#10b981'],
+                                    margin: [10, 10, 10, 10]
                                 }
                             ]
                         ]
