@@ -29,6 +29,8 @@
     <!-- Librerías de pdfmake -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <!-- Chart.js para Gráficos de Progreso -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-950 text-gray-100 font-sans antialiased selection:bg-brand-500 selection:text-gray-950 flex flex-col min-h-screen justify-between">
 
@@ -222,6 +224,20 @@
                             </div>
                         </div>
 
+                        <!-- Panel de Gráfico de Progreso (Chart.js) [AÑADIDO] -->
+                        <div class="bg-gray-950 border border-gray-800 rounded-2xl p-5 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2 text-white font-bold text-sm">
+                                    <i class="fa-solid fa-chart-line text-brand-400"></i>
+                                    <span>Evolución de Peso y Calorías</span>
+                                </div>
+                                <span class="text-xs text-gray-400">Historial de registros</span>
+                            </div>
+                            <div class="relative w-full h-48">
+                                <canvas id="progressChart"></canvas>
+                            </div>
+                        </div>
+
                         <!-- Estructura & Macros -->
                         <div class="bg-gray-950 border border-gray-800 rounded-2xl p-5 space-y-4 text-sm text-gray-300">
                             <div>
@@ -333,6 +349,7 @@
         
         let userPlanData = { kcal: 0, protein: 0, carbs: 0, fats: 0, level: 'Intermedio', goal: 'Ganar masa muscular', equipment: 'Gimnasio', injuries: 'Ninguna', supplements: 'Ninguno', allergies: 'Ninguna' };
         let rawAiPlanText = '';
+        let progressChartInstance = null; // [AÑADIDO]
 
         function scrollToApp() {
             document.getElementById('app-container').scrollIntoView({ behavior: 'smooth' });
@@ -387,6 +404,83 @@
 
         function closeLegalModal() {
             document.getElementById('legal-modal').classList.add('hidden');
+        }
+
+        // [AÑADIDO] Renderizar Gráfico de Progreso con Chart.js
+        function renderProgressChart(email, currentWeight, currentKcal) {
+            let historyKey = 'fitai_history_' + email;
+            let historyData = JSON.parse(localStorage.getItem(historyKey)) || [];
+
+            const today = new Date().toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
+            historyData.push({ date: today, weight: currentWeight, kcal: currentKcal });
+            if (historyData.length > 6) historyData.shift();
+
+            localStorage.setItem(historyKey, JSON.stringify(historyData));
+
+            const labels = historyData.map(item => item.date);
+            const weights = historyData.map(item => item.weight);
+            const kcals = historyData.map(item => item.kcal);
+
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            if (progressChartInstance) {
+                progressChartInstance.destroy();
+            }
+
+            progressChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Peso (kg)',
+                            data: weights,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Calorías (kcal)',
+                            data: kcals,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#9ca3af', font: { size: 10 } }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#10b981', font: { size: 10 } }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            ticks: { color: '#3b82f6', font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e5e7eb', font: { size: 11 } }
+                        }
+                    }
+                }
+            });
         }
 
         async function handleFormSubmit(event) {
@@ -464,9 +558,14 @@
 
             document.getElementById('loading-step').classList.add('hidden');
             document.getElementById('result-step').classList.remove('hidden');
+
+            // [AÑADIDO] Renderizar la gráfica de evolución del usuario
+            setTimeout(() => {
+                renderProgressChart(email, weight, kcal);
+            }, 100);
         }
 
-        // BLOQUE MASIVO DE ALTA CALIDAD INTEGRADO CON LOS DATOS DEL USUARIO (PDF ORIGINAL COMPLETO)
+        // BLOQUE MASIVO DE ALTA CALIDAD INTEGRADO CON LOS DATOS DEL USUARIO
         function getSmartProfessionalContent() {
             return [
                 { text: 'PROGRAMA DE ENTRENAMIENTO Y NUTRICIÓN FITAI PRO', fontSize: 13, bold: true, color: '#047857', margin: [0, 0, 0, 6] },
