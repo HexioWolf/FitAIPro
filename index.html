@@ -79,7 +79,7 @@
             <!-- PESTAÑAS DE NAVEGACIÓN (TABS) -->
             <div class="flex justify-center mb-6 space-x-2">
                 <button type="button" id="tab-btn-generator" onclick="switchTab('generator')" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-brand-500 text-gray-950 shadow-lg shadow-brand-500/20 cursor-pointer">
-                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Generar Plan
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Generar / Editar Plan
                 </button>
                 <button type="button" id="tab-btn-history" onclick="switchTab('history')" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-gray-900 text-gray-400 hover:text-white border border-gray-800 cursor-pointer">
                     <i class="fa-solid fa-folder-open mr-2"></i> Mis Planes Guardados
@@ -93,8 +93,8 @@
                     <!-- Step 1: Form -->
                     <div id="form-step">
                         <div class="mb-8 text-center">
-                            <h2 class="text-2xl font-bold text-white mb-2">Genera tu plan personalizado</h2>
-                            <p class="text-sm text-gray-400">Introduce tus datos para que la IA elabore tu plan gratuito.</p>
+                            <h2 id="form-title-text" class="text-2xl font-bold text-white mb-2">Genera tu plan personalizado</h2>
+                            <p id="form-subtitle-text" class="text-sm text-gray-400">Introduce tus datos para que la IA elabore tu plan gratuito.</p>
                         </div>
 
                         <form id="fitness-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
@@ -191,7 +191,7 @@
                             </div>
 
                             <button type="submit" id="submit-btn" class="w-full mt-4 bg-brand-500 hover:bg-brand-600 text-gray-950 font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-brand-500/20 flex items-center justify-center space-x-2 text-sm cursor-pointer">
-                                <span>Generar Plan con IA Gratis</span>
+                                <span id="submit-btn-text">Generar Plan con IA Gratis</span>
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                             </button>
                         </form>
@@ -207,8 +207,8 @@
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-white mb-2">Diseñando tu plan con IA...</h3>
-                            <p class="text-sm text-gray-400">Enviando datos al correo y preparando tu rutina...</p>
+                            <h3 class="text-xl font-bold text-white mb-2">Actualizando tu plan con IA...</h3>
+                            <p class="text-sm text-gray-400">Sincronizando datos y preparando tu rutina...</p>
                         </div>
                     </div>
 
@@ -331,11 +331,11 @@
                     </div>
                 </div>
 
-                <!-- VISTA 2: MIS PLANES GUARDADOS / HISTORIAL CON PANEL DE ACTUALIZACIÓN RÁPIDA -->
+                <!-- VISTA 2: MIS PLANES GUARDADOS / HISTORIAL -->
                 <div id="view-history" class="hidden space-y-6">
                     <div class="mb-6 text-center">
                         <h2 class="text-2xl font-bold text-white mb-2">Mis Planes Guardados</h2>
-                        <p class="text-sm text-gray-400">Introduce tu correo para ver tus rutinas y actualizar tu peso al instante.</p>
+                        <p class="text-sm text-gray-400">Introduce tu correo para ver tus rutinas y editarlas por completo.</p>
                     </div>
 
                     <div class="flex gap-2 max-w-md mx-auto mb-6">
@@ -542,7 +542,7 @@
             });
         }
 
-        // Cargar Historial con Panel de Actualización Directa Integrado
+        // Cargar Historial de Planes
         function loadUserHistory() {
             const email = document.getElementById('history-email-input').value.trim().toLowerCase();
             const container = document.getElementById('history-list-container');
@@ -567,116 +567,56 @@
             }
 
             container.innerHTML = '';
-            foundPlans.forEach((plan, idx) => {
+            foundPlans.forEach(plan => {
                 let card = document.createElement('div');
-                card.className = "bg-gray-950 border border-gray-800 p-5 rounded-2xl space-y-4";
+                card.className = "bg-gray-950 border border-gray-800 p-5 rounded-2xl flex items-center justify-between gap-4";
                 card.innerHTML = `
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-900 pb-3">
-                        <div>
-                            <span class="text-xs bg-brand-500/10 text-brand-400 px-2.5 py-0.5 rounded-full font-medium border border-brand-500/20">${plan.goal}</span>
-                            <h4 class="text-white font-bold text-lg mt-1"><i class="fa-solid fa-bookmark text-brand-400 mr-2"></i>${plan.planName}</h4>
-                        </div>
-                        <span class="text-xs text-gray-400">Nivel: ${plan.level}</span>
+                    <div>
+                        <span class="text-xs bg-brand-500/10 text-brand-400 px-2.5 py-0.5 rounded-full font-medium border border-brand-500/20">${plan.goal}</span>
+                        <h4 class="text-white font-bold text-lg mt-1.5"><i class="fa-solid fa-bookmark text-brand-400 mr-2"></i>${plan.planName}</h4>
+                        <p class="text-xs text-gray-400 mt-1">Peso: ${plan.weight}kg | Altura: ${plan.height}cm | Calorías: ${plan.kcal} kcal</p>
                     </div>
-
-                    <!-- Panel de Actualización Directa -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end bg-gray-900/50 p-3 rounded-xl border border-gray-800/80">
-                        <div>
-                            <label class="block text-xs font-medium text-gray-400 mb-1">Actualizar Peso (kg)</label>
-                            <input type="number" id="quick-weight-${idx}" value="${plan.weight}" class="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-lg text-white text-sm focus:outline-none focus:border-brand-500">
-                        </div>
-                        <div>
-                            <span class="text-xs text-gray-400 block mb-1">Calorías Actuales</span>
-                            <span class="text-brand-400 font-bold text-sm block py-2"><span id="quick-kcal-label-${idx}">${plan.kcal}</span> kcal</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick='updatePlanDirectly(${JSON.stringify(plan)}, ${idx})' class="flex-1 bg-brand-500 hover:bg-brand-600 text-gray-950 font-bold px-3 py-2 rounded-lg text-xs transition cursor-pointer flex items-center justify-center space-x-1">
-                                <i class="fa-solid fa-sync-alt"></i> <span>Actualizar</span>
-                            </button>
-                            <button onclick='viewPlanDetails(${JSON.stringify(plan)})' class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-2 rounded-lg text-xs transition cursor-pointer" title="Ver detalles y gráfica">
-                                <i class="fa-solid fa-chart-line"></i>
-                            </button>
-                        </div>
-                    </div>
+                    <button onclick='loadPlanIntoForm(${JSON.stringify(plan)})' class="bg-brand-500 hover:bg-brand-600 text-gray-950 font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shrink-0 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-pen-to-square"></i> <span>Editar Plan</span>
+                    </button>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // Actualizar el plan directamente desde la tarjeta sin cambiar de pestaña
-        async function updatePlanDirectly(plan, idx) {
-            const newWeight = parseFloat(document.getElementById(`quick-weight-${idx}`).value) || plan.weight;
-            
-            let kcal = Math.round(newWeight * 30);
-            if (plan.goal.includes('Perder')) kcal -= 400;
-            if (plan.goal.includes('Ganar masa')) kcal += 350;
+        // Cargar todos los datos del plan seleccionado en el formulario para editar cualquier campo
+        function loadPlanIntoForm(plan) {
+            document.getElementById('email').value = plan.email || '';
+            document.getElementById('plan-name').value = plan.planName || '';
+            document.getElementById('weight').value = plan.weight || '';
+            document.getElementById('height').value = plan.height || '';
+            if (plan.sex) document.getElementById('sex').value = plan.sex;
+            if (plan.activity) document.getElementById('activity').value = plan.activity;
+            if (plan.level) document.getElementById('level').value = plan.level;
+            if (plan.goal) document.getElementById('goal').value = plan.goal;
+            if (plan.equipment) document.getElementById('equipment').value = plan.equipment;
+            if (plan.allergies) document.getElementById('allergies').value = plan.allergies;
+            if (plan.injuries) document.getElementById('injuries').value = plan.injuries;
 
-            let protein = Math.round(newWeight * 2.2);
-            let fat = Math.round(newWeight * 0.9);
-            let carbs = Math.round((kcal - (protein * 4 + fat * 9)) / 4);
-
-            plan.weight = newWeight;
-            plan.kcal = kcal;
-            plan.protein = protein;
-            plan.carbs = carbs;
-            plan.fats = fat;
-
-            localStorage.setItem('fitai_plan_' + plan.email + '_' + plan.planName.trim().toLowerCase(), JSON.stringify(plan));
-            renderProgressChart(plan.email, plan.planName, newWeight, kcal);
-
-            document.getElementById(`quick-kcal-label-${idx}`).innerText = kcal;
-
-            try {
-                await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        email: plan.email, 
-                        planName: plan.planName, 
-                        weight: newWeight, 
-                        height: plan.height, 
-                        sex: plan.sex, 
-                        activity: plan.activity, 
-                        level: plan.level, 
-                        objetivo_principal: plan.goal, 
-                        equipment: plan.equipment, 
-                        supplements: plan.supplements, 
-                        allergies: plan.allergies, 
-                        injuries: plan.injuries, 
-                        kcal 
-                    })
-                });
-                alert('¡Plan y datos actualizados correctamente!');
-            } catch (e) {
-                console.error('Error al actualizar en webhook n8n:', e);
-                alert('Datos actualizados localmente, pero hubo un fallo al sincronizar con el servidor.');
+            if (plan.supplements) {
+                const supSelect = document.getElementById('suplementos');
+                const supCustom = document.getElementById('suplementos-custom');
+                if (supSelect.querySelector(`option[value="${plan.supplements}"]`)) {
+                    supSelect.value = plan.supplements;
+                    supCustom.classList.add('hidden');
+                    supCustom.value = '';
+                } else {
+                    supSelect.value = 'Escribir yo mismo';
+                    supCustom.classList.remove('hidden');
+                    supCustom.value = plan.supplements;
+                }
             }
-        }
 
-        // Ver detalles y gráfica del plan específico
-        function viewPlanDetails(plan) {
-            userPlanData = plan;
-            document.getElementById('res-plan-title-badge').innerText = plan.planName;
-            document.getElementById('res-plan-heading').innerText = plan.planName;
-            document.getElementById('res-kcal').innerText = `${plan.kcal} kcal`;
-            document.getElementById('res-focus').innerText = plan.goal.split('/')[0];
-            document.getElementById('res-protein').innerText = `${plan.protein}g`;
-            document.getElementById('res-carbs').innerText = `${plan.carbs}g`;
-            document.getElementById('res-fats').innerText = `${plan.fats}g`;
-
-            document.getElementById('res-workout-detail').innerText = 
-                `Rutina optimizada para nivel ${plan.level} (${plan.weight}kg, ${plan.height}cm). Enfocada en ${plan.goal.toLowerCase()}. Equipamiento: ${plan.equipment}. Suplementación: ${plan.supplements}.`;
-
-            document.getElementById('res-summary-text').innerHTML = `Plan guardado adaptado a nivel <strong>${plan.level}</strong> con enfoque de <strong>${plan.goal.toLowerCase()}</strong>.`;
-            document.getElementById('res-summary-meta').innerText = `Equipamiento: ${plan.equipment} | Suplementos: ${plan.supplements} | Alergias: ${plan.allergies} | Lesiones: ${plan.injuries || 'Ninguna'}`;
+            document.getElementById('form-title-text').innerText = `Editando: ${plan.planName}`;
+            document.getElementById('form-subtitle-text').innerText = 'Modifica cualquier parámetro y guarda los cambios para actualizar tu rutina.';
+            document.getElementById('submit-btn-text').innerText = 'Actualizar Plan y Sincronizar';
 
             switchTab('generator');
-            document.getElementById('form-step').classList.add('hidden');
-            document.getElementById('result-step').classList.remove('hidden');
-
-            setTimeout(() => {
-                renderProgressChart(plan.email, plan.planName, plan.weight, plan.kcal);
-            }, 100);
         }
 
         async function handleFormSubmit(event) {
@@ -709,7 +649,7 @@
             let fat = Math.round(weight * 0.9);
             let carbs = Math.round((kcal - (protein * 4 + fat * 9)) / 4);
 
-            userPlanData = { email, planName, kcal, protein, carbs, fats: fat, level, goal, equipment, injuries, supplements, allergies, weight, height };
+            userPlanData = { email, planName, kcal, protein, carbs, fats: fat, level, goal, equipment, injuries, supplements, allergies, weight, height, sex, activity };
 
             localStorage.setItem('fitai_plan_' + email + '_' + planName.trim().toLowerCase(), JSON.stringify(userPlanData));
 
@@ -953,7 +893,14 @@
         }
 
         function goToStripe() { window.location.href = 'https://buy.stripe.com/test_cNi9AU0ikaHk9QleMZdby01'; }
-        function resetApp() { document.getElementById('result-step').classList.add('hidden'); document.getElementById('form-step').classList.remove('hidden'); document.getElementById('fitness-form').reset(); }
+        function resetApp() { 
+            document.getElementById('form-title-text').innerText = 'Genera tu plan personalizado';
+            document.getElementById('form-subtitle-text').innerText = 'Introduce tus datos para que la IA elabore tu plan gratuito.';
+            document.getElementById('submit-btn-text').innerText = 'Generar Plan con IA Gratis';
+            document.getElementById('result-step').classList.add('hidden'); 
+            document.getElementById('form-step').classList.remove('hidden'); 
+            document.getElementById('fitness-form').reset(); 
+        }
     </script>
 </body>
 </html>
