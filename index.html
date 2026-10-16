@@ -287,7 +287,7 @@
                                     </div>
                                 </div>
                                 <button type="button" onclick="applyPlanUpdates()" class="w-full bg-brand-500 hover:bg-brand-600 text-gray-950 font-bold py-2.5 px-4 rounded-xl text-xs transition cursor-pointer flex items-center justify-center space-x-1.5 shadow-lg shadow-brand-500/20">
-                                    <i class="fa-solid fa-sync-alt"></i> <span>Guardar Cambios y Recalcular Calorías</span>
+                                    <i class="fa-solid fa-sync-alt"></i> <span>Guardar Cambios, Recalcular y Enviar Correo Actualizado</span>
                                 </button>
                             </div>
 
@@ -649,7 +649,7 @@
             }, 100);
         }
 
-        // Aplicar actualizaciones desde el panel integrado en la vista de resultados
+        // Aplicar actualizaciones desde el panel integrado y reenviar correo vía n8n
         async function applyPlanUpdates() {
             const newWeight = parseFloat(document.getElementById('update-weight').value) || userPlanData.weight;
             const newHeight = parseFloat(document.getElementById('update-height').value) || userPlanData.height;
@@ -686,7 +686,7 @@
             renderProgressChart(userPlanData.email, userPlanData.planName, newWeight, kcal);
 
             try {
-                await fetch(WEBHOOK_URL, {
+                const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -705,10 +705,15 @@
                         kcal 
                     })
                 });
-                alert('¡Plan actualizado y sincronizado correctamente con n8n!');
+
+                if (response.ok) {
+                    alert('¡Plan actualizado, sincronizado y nuevo correo enviado correctamente!');
+                } else {
+                    alert('Plan actualizado localmente, pero hubo un problema al enviar el correo.');
+                }
             } catch (e) {
                 console.error('Error al sincronizar con webhook n8n:', e);
-                alert('Plan actualizado localmente, pero hubo un fallo al sincronizar con el servidor.');
+                alert('Plan actualizado en el dispositivo, pero falló la conexión con el servidor de correo.');
             }
         }
 
