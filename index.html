@@ -576,7 +576,7 @@
             });
         }
 
-        // FUNCIÓN DE CONSULTA SINCRONIZADA A LA NUBE (MÓVIL Y MULTIDISPOSITIVO)
+        // FUNCIÓN DE CONSULTA SINCRONIZADA CON GOOGLE SHEETS (MAPEADO DE COLUMNAS)
         async function cargarPlanUsuario(emailUsuario) {
             try {
                 const response = await fetch(WEBHOOK_URL, {
@@ -594,24 +594,30 @@
                         foundPlan = data;
                     }
 
-                    if (foundPlan && (foundPlan.planName || foundPlan.plan_name || foundPlan.objetivo_principal)) {
+                    if (foundPlan && (foundPlan.peso || foundPlan.objetivo || foundPlan.calorias_actuales)) {
+                        const pesoNum = parseFloat(foundPlan.peso) || 70;
+                        const kcalNum = parseInt(foundPlan.calorias_actuales || foundPlan.calorias_actuales_) || Math.round(pesoNum * 30);
+                        const protNum = Math.round(pesoNum * 2.2);
+                        const fatNum = Math.round(pesoNum * 0.9);
+                        const carbNum = Math.round((kcalNum - (protNum * 4 + fatNum * 9)) / 4);
+
                         let normalizedPlan = {
                             email: emailUsuario,
-                            planName: foundPlan.planName || foundPlan.plan_name || 'Plan Recuperado',
-                            kcal: parseInt(foundPlan.kcal) || 2000,
-                            protein: parseInt(foundPlan.protein) || 150,
-                            carbs: parseInt(foundPlan.carbs) || 200,
-                            fats: parseInt(foundPlan.fats) || 60,
-                            level: foundPlan.level || 'Intermedio',
-                            goal: foundPlan.objetivo_principal || foundPlan.goal || 'Fitness',
-                            equipment: foundPlan.equipment || 'Gimnasio',
-                            injuries: foundPlan.injuries || 'Ninguna',
-                            supplements: foundPlan.supplements || 'Ninguno',
-                            allergies: foundPlan.allergies || 'Ninguna',
-                            weight: parseFloat(foundPlan.weight) || 70,
-                            height: parseFloat(foundPlan.height) || 175,
-                            sex: foundPlan.sex || 'Hombre',
-                            activity: foundPlan.activity || 'Moderada'
+                            planName: foundPlan.objetivo ? `Plan ${foundPlan.objetivo}` : 'Mi Plan Personalizado',
+                            kcal: kcalNum,
+                            protein: protNum,
+                            carbs: carbNum,
+                            fats: fatNum,
+                            level: 'Intermedio',
+                            goal: foundPlan.objetivo || 'Ganar masa muscular',
+                            equipment: 'Gimnasio',
+                            injuries: 'Ninguna',
+                            supplements: 'Recomendados por IA',
+                            allergies: 'Ninguna',
+                            weight: pesoNum,
+                            height: parseFloat(foundPlan.altura) || 175,
+                            sex: foundPlan.sexo || 'Hombre',
+                            activity: foundPlan.actividad || 'Moderada'
                         };
 
                         localStorage.setItem('fitai_plan_' + emailUsuario + '_' + normalizedPlan.planName.trim().toLowerCase(), JSON.stringify(normalizedPlan));
