@@ -576,8 +576,56 @@
             });
         }
 
-        // Cargar Historial de Planes
-        function loadUserHistory() {
+        // FUNCIÓN DE CONSULTA SINCRONIZADA A LA NUBE (MÓVIL Y MULTIDISPOSITIVO)
+        async function cargarPlanUsuario(emailUsuario) {
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'consultar_plan', email: emailUsuario })
+                });
+
+                if (response.ok) {
+                    const data = await response.json().catch(() => null);
+                    let foundPlan = null;
+                    if (Array.isArray(data) && data.length > 0) {
+                        foundPlan = data[0];
+                    } else if (data && typeof data === 'object') {
+                        foundPlan = data;
+                    }
+
+                    if (foundPlan && (foundPlan.planName || foundPlan.plan_name || foundPlan.objetivo_principal)) {
+                        let normalizedPlan = {
+                            email: emailUsuario,
+                            planName: foundPlan.planName || foundPlan.plan_name || 'Plan Recuperado',
+                            kcal: parseInt(foundPlan.kcal) || 2000,
+                            protein: parseInt(foundPlan.protein) || 150,
+                            carbs: parseInt(foundPlan.carbs) || 200,
+                            fats: parseInt(foundPlan.fats) || 60,
+                            level: foundPlan.level || 'Intermedio',
+                            goal: foundPlan.objetivo_principal || foundPlan.goal || 'Fitness',
+                            equipment: foundPlan.equipment || 'Gimnasio',
+                            injuries: foundPlan.injuries || 'Ninguna',
+                            supplements: foundPlan.supplements || 'Ninguno',
+                            allergies: foundPlan.allergies || 'Ninguna',
+                            weight: parseFloat(foundPlan.weight) || 70,
+                            height: parseFloat(foundPlan.height) || 175,
+                            sex: foundPlan.sex || 'Hombre',
+                            activity: foundPlan.activity || 'Moderada'
+                        };
+
+                        localStorage.setItem('fitai_plan_' + emailUsuario + '_' + normalizedPlan.planName.trim().toLowerCase(), JSON.stringify(normalizedPlan));
+                        return [normalizedPlan];
+                    }
+                }
+            } catch (error) {
+                console.error('Error al sincronizar plan desde la nube:', error);
+            }
+            return [];
+        }
+
+        // Cargar Historial de Planes (con Sincronización Automática con la Nube)
+        async function loadUserHistory() {
             const email = document.getElementById('history-email-input').value.trim().toLowerCase();
             const container = document.getElementById('history-list-container');
             
@@ -585,6 +633,8 @@
                 container.innerHTML = '<p class="text-center text-sm text-amber-400 py-4">Por favor, introduce un correo electrónico válido.</p>';
                 return;
             }
+
+            container.innerHTML = '<p class="text-center text-sm text-gray-400 py-6"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Buscando planes en la nube...</p>';
 
             let foundPlans = [];
             for (let i = 0; i < localStorage.length; i++) {
@@ -596,7 +646,11 @@
             }
 
             if (foundPlans.length === 0) {
-                container.innerHTML = '<p class="text-center text-sm text-gray-500 py-6">No se encontraron planes guardados para este correo en este dispositivo.</p>';
+                foundPlans = await cargarPlanUsuario(email);
+            }
+
+            if (foundPlans.length === 0) {
+                container.innerHTML = '<p class="text-center text-sm text-gray-500 py-6">No se encontraron planes guardados para este correo.</p>';
                 return;
             }
 
